@@ -1,22 +1,37 @@
 <html>
 <head>
     <meta charset='UTF-8'>
-    <title>RAHMAT SYSTEM</title>
+    <title>NEBULA PROTOCOL | ARCHITECT-X</title>
+    <style>
+        body { background-color: #020202; color: #00d4ff; font-family: 'Courier New', monospace; text-align: center; overflow: hidden; }
+        .header { border-bottom: 1px solid #00d4ff; padding: 20px; letter-spacing: 5px; text-shadow: 0 0 10px #00d4ff; }
+        .mining-status { margin-top: 50px; border: 1px solid #333; display: inline-block; padding: 30px; background: rgba(0, 212, 255, 0.05); }
+        #nbl-balance { font-size: 35px; color: #fff; text-shadow: 0 0 5px #fff; }
+        .alias { position: fixed; bottom: 10px; right: 10px; font-size: 12px; color: #444; }
+    </style>
 </head>
-<body style='background-color:black; color:#00FF00; font-family:Courier; text-align:center;'>
-    <h1 style='border-bottom: 2px solid #00FF00; padding:10px;'>RAHMAT DIGITAL BANK</h1>
-    <p>SERVER RAM: 16GB</p>
-    <div style='border:1px solid gold; padding:20px; display:inline-block; margin-top:20px;'>
-        <h3 style='color:gold;'>TRANSFER R-COIN</h3>
-        <input type='text' id='to' placeholder='Receiver ID' style='margin:5px; padding:5px;'><br>
-        <input type='number' id='amt' placeholder='Amount' style='margin:5px; padding:5px;'><br>
-        <button onclick='sendMoney()' style='background:gold; color:black; font-weight:bold; padding:10px; cursor:pointer; margin-top:10px;'>SEND NOW</button>
+<body>
+    <div class="header">
+        <h1>NEBULA NETWORK ACTIVE</h1>
+        <p>DECENTRALIZED NODE | RAM: 16GB SECURED</p>
     </div>
+
+    <div class="mining-status">
+        <h3 style="color: #888;">CURRENT GLOBAL VALUE: $98,432.00 / NBL</h3>
+        <div id="nbl-balance">GENERATING NBL: 0.00000000</div>
+        <p style="font-size: 12px;">ENCRYPTED TRANSACTION TUNNEL ACTIVE...</p>
+        <button style="background: #00d4ff; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer;">WITHDRAW TO COLD WALLET</button>
+    </div>
+
+    <div class="alias">ID: ARCHITECT-X</div>
+
     <script>
-        function sendMoney(){ 
-            var name = document.getElementById("to").value; 
-            alert("Transaction Successful to: " + name); 
-        }
+        let nbl = 0.00000000;
+        // د نیبولا د پیسو تولید (Mining Logic)
+        setInterval(() => {
+            nbl += 0.00000089; // دا د سکو د کموالي او ارزښت لوړولو لپاره ورو دی
+            document.getElementById('nbl-balance').innerText = "GENERATING NBL: " + nbl.toFixed(8);
+        }, 1500);
     </script>
 </body>
 </html>
