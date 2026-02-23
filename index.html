@@ -80,7 +80,7 @@
                 localStorage.setItem('neb_core_bal', nbl);
             }, 1000);
 
-            // د هیکرانو په څېر د لګونو سیسټم (Live Logs)
+            // SECURITY_NODE_LOGS
             setInterval(() => {
                 const logs = [
                     "Node 44.12: Block Verified",
@@ -97,19 +97,17 @@
                 container.prepend(entry);
                 if(container.children.length > 15) container.removeChild(container.lastChild);
             }, 3000);
-        }
+            function processWithdraw() {
+        alert("BROADCASTING TO NEBULA NETWORK...\nStatus: P2P Gateway Active.");
+    }
 
-        function processWithdraw() {
-            alert("BROADCASTING TO NEBULA NETWORK...\nStatus: P2P Gateway Active.");
-        }
-    </script>
+    function updateGlobalSupply() {
+        let baseSupply = 124580.4215; // INITIAL_SUPPLY_BASE
+        setInterval(() => {
+            baseSupply += Math.random() * 0.00001; // AUTO_INCREMENT_PROTOCOL
+            document.getElementById('global-supply').innerText = baseSupply.toFixed(4) + " NBL";
+        }, 2000);
+    }
+</script>
 </body>
 </html>
-  // GLOBAL ASSET GENERATION LOGIC
-function updateGlobalSupply() {
-    let baseSupply = 124580.4215; //INITIAL_SUPPLY_BASE 
-    setInterval(() => {
-        baseSupply += Math.random() * 0.00001; //AUTO_INCREMENT_PROTOCOL
-        document.getElementById('global-supply').innerText = baseSupply.toFixed(4) + " NBL";
-    }, 2000);
-}
