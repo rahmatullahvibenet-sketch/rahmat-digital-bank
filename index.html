@@ -1,88 +1,75 @@
 <html>
 <head>
     <meta charset='UTF-8'>
-    <title>NEBULA SUPREME | ARCHITECT-X</title>
+    <title>NEBULA FORTRESS | ARCHITECT-X</title>
     <style>
-        body { background-color: #010101; color: #00f2ff; font-family: 'Segoe UI', Tahoma, sans-serif; text-align: center; margin: 0; }
-        .dashboard { padding: 30px; border-bottom: 2px solid #333; background: linear-gradient(to bottom, #000, #050505); }
-        .live-ticker { font-size: 14px; color: #555; background: #111; padding: 10px; border-bottom: 1px solid #222; }
-        .vault-box { margin-top: 40px; border: 1px solid #00f2ff; display: inline-block; padding: 40px; border-radius: 15px; box-shadow: 0 0 30px rgba(0,242,255,0.1); background: rgba(0,242,255,0.02); }
-        #balance { font-size: 45px; color: #ffd700; margin: 20px 0; text-shadow: 0 0 10px #ffd700; }
-        input { background: transparent; border: 1px solid #333; color: #00f2ff; padding: 15px; border-radius: 5px; text-align: center; width: 250px; }
-        .btn { background: #00f2ff; color: #000; padding: 15px 30px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        .btn-withdraw { background: transparent; border: 1px solid #ff0055; color: #ff0055; margin-top: 20px; }
-        #withdrawal-panel { display: none; margin-top: 25px; padding: 20px; border: 1px dashed #ff0055; }
+        body { background-color: #000; color: #00f2ff; font-family: 'Courier New', monospace; text-align: center; margin: 0; }
+        .terminal { margin-top: 100px; display: inline-block; border: 1px solid #333; padding: 40px; background: #050505; box-shadow: 0 0 100px rgba(0,242,255,0.05); }
+        #balance { font-size: 45px; color: gold; margin: 20px 0; letter-spacing: 2px; }
+        input { background: #000; border: 1px solid #00f2ff; color: #00f2ff; padding: 15px; width: 350px; text-align: center; margin-bottom: 20px; font-size: 12px; }
+        .btn { background: #00f2ff; color: #000; border: none; padding: 15px 30px; cursor: pointer; font-weight: bold; width: 100%; }
+        .user-id-box { font-size: 10px; color: #555; margin-top: 20px; border: 1px dashed #222; padding: 10px; }
     </style>
 </head>
-<body onload="checkStatus()">
+<body onload="checkVault()">
 
-    <div id="login-screen" style="margin-top: 200px;">
-        <h1 style="letter-spacing: 15px;">NEBULA ACCESS</h1>
-        <p style="color: #444;">ENCRYPTED DECENTRALIZED TERMINAL</p>
-        <input type="password" id="access-key" placeholder="ENTER MASTER KEY"><br><br>
-        <button class="btn" onclick="login()">INITIALIZE SYSTEM</button>
+    <div id="gate">
+        <div class="terminal">
+            <h2 style="letter-spacing: 5px;">ENCRYPTED NODE</h2>
+            <p style="font-size: 10px; color: #ff0055;">WARNING: HIGH-LEVEL SECURITY ACTIVE</p>
+            <input type="password" id="master-key" placeholder="PASTE 35-CHAR MASTER KEY"><br>
+            <button class="btn" onclick="decrypt()">UNLEASH SYSTEM</button>
+        </div>
     </div>
 
     <div id="main-ui" style="display:none;">
-        <div class="live-ticker">NETWORK: ONLINE | NODE: 16GB-RAM-SECURE | GLOBAL VALUE: $114,832.00 / NBL</div>
+        <div style="background:#111; padding:10px; font-size:10px; border-bottom:1px solid #222;">
+            NODE: ARCHITECT-X | GLOBAL VALUE: $114,832.00 | STATUS: UNTRACEABLE
+        </div>
         
-        <div class="dashboard">
-            <h2>NEBULA PROTOCOL ACTIVE</h2>
-            <p style="color: #00f2ff; font-size: 12px;">AUTHORITY: ARCHITECT-X</p>
-        </div>
+        <div class="terminal" style="margin-top:50px;">
+            <p style="font-size: 10px; color: #888;">UNCLAIMED NBL ASSETS</p>
+            <div id="balance">0.0000000000</div>
+            
+            <div class="user-id-box">
+                YOUR ANONYMOUS USER ID: <span id="user-id" style="color:#00f2ff;"></span>
+            </div>
 
-        <div class="vault-box">
-            <p style="font-size: 14px; color: #888;">UNCLAIMED NBL BALANCE</p>
-            <div id="balance">0.00000000</div>
-            <p style="font-size: 10px; color: #333;">MINING SPEED: 0.00000520 NBL/SEC (OVERCLOCK ACTIVE)</p>
-            <button class="btn-withdraw btn" onclick="showWithdraw()">EXECUTE ANONYMOUS TRANSFER</button>
-        </div>
-
-        <div id="withdrawal-panel">
-            <h4 style="color: #ff0055;">ENCRYPTED WITHDRAWAL GATEWAY</h4>
-            <input type="text" id="target-addr" placeholder="DESTINATION WALLET ADDRESS"><br><br>
-            <button class="btn" style="background:#ff0055; color:white;" onclick="process()">CONFIRM ANONYMOUS SEND</button>
-            <p id="msg" style="color: yellow; font-size: 12px; margin-top: 10px;"></p>
+            <button class="btn" style="margin-top:20px; background:transparent; border:1px solid #ff0055; color:#ff0055;" onclick="alert('P2P Gateway Active. No records stored.')">ANONYMOUS WITHDRAW</button>
         </div>
     </div>
 
     <script>
-        const KEY = "786";
-        let bal = parseFloat(localStorage.getItem('neb_supreme_bal')) || 0;
+        // ستا ۳۵ توري لرونکی سخت پاسورډ
+        const MASTER_VAULT = "NBL-AX-99-TR-786-PQ-2024-X-SECURE-MAX";
+        let nbl = parseFloat(localStorage.getItem('neb_fortress_bal')) || 0;
 
-        function checkStatus() {
-            document.getElementById('main-ui').style.display = "none";
+        function checkVault() {
+            // د کاروونکي لپاره په اتومات ډول د ۱۰ عددونو کوډ جوړول
+            if(!localStorage.getItem('neb_user_id')) {
+                let randomId = Math.random().toString(36).substr(2, 10).toUpperCase();
+                localStorage.setItem('neb_user_id', randomId);
+            }
+            document.getElementById('user-id').innerText = localStorage.getItem('neb_user_id');
         }
 
-        function login() {
-            if(document.getElementById('access-key').value === KEY) {
-                document.getElementById('login-screen').style.display = "none";
+        function decrypt() {
+            let input = document.getElementById('master-key').value;
+            if(input === MASTER_VAULT) {
+                document.getElementById('gate').style.display = "none";
                 document.getElementById('main-ui').style.display = "block";
-                runMining();
-            } else { alert("ACCESS DENIED!"); }
+                startFlow();
+            } else {
+                alert("INTRUSION DETECTED. IP LOGGED (SIMULATED).");
+            }
         }
 
-        function runMining() {
+        function startFlow() {
             setInterval(() => {
-                // ستا ګټه مې له بټکوین څخه پنځه چنده زیاته کړه
-                bal += 0.00000520; 
-                document.getElementById('balance').innerText = bal.toFixed(8);
-                localStorage.setItem('neb_supreme_bal', bal);
+                nbl += 0.0000000625; // چټک تولید
+                document.getElementById('balance').innerText = nbl.toFixed(10);
+                localStorage.setItem('neb_fortress_bal', nbl);
             }, 1000);
-        }
-
-        function showWithdraw() {
-            document.getElementById('withdrawal-panel').style.display = 'block';
-        }
-
-        function process() {
-            let addr = document.getElementById('target-addr').value;
-            if(addr.length > 10) {
-                document.getElementById('msg').innerText = "ROUTING THROUGH MIXER... HIDING IP... PENDING.";
-                setTimeout(() => {
-                    alert("BROADCASTED! ARCHITECT-X, your privacy is secured. Transaction untraceable.");
-                }, 4000);
-            } else { alert("INVALID ADDRESS!"); }
         }
     </script>
 </body>
