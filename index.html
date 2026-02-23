@@ -1,37 +1,59 @@
 <html>
 <head>
     <meta charset='UTF-8'>
-    <title>NEBULA PROTOCOL | ARCHITECT-X</title>
+    <title>NEBULA VAULT | ARCHITECT-X</title>
     <style>
-        body { background-color: #020202; color: #00d4ff; font-family: 'Courier New', monospace; text-align: center; overflow: hidden; }
-        .header { border-bottom: 1px solid #00d4ff; padding: 20px; letter-spacing: 5px; text-shadow: 0 0 10px #00d4ff; }
-        .mining-status { margin-top: 50px; border: 1px solid #333; display: inline-block; padding: 30px; background: rgba(0, 212, 255, 0.05); }
-        #nbl-balance { font-size: 35px; color: #fff; text-shadow: 0 0 5px #fff; }
-        .alias { position: fixed; bottom: 10px; right: 10px; font-size: 12px; color: #444; }
+        body { background-color: #020202; color: #00d4ff; font-family: 'Courier New', monospace; text-align: center; }
+        .vault-box { margin-top: 100px; border: 2px dashed #00d4ff; padding: 40px; display: inline-block; background: rgba(0, 212, 255, 0.02); }
+        #balance-display { font-size: 40px; color: gold; margin: 20px; }
+        input { background: transparent; border: 1px solid #00d4ff; color: #00d4ff; padding: 10px; text-align: center; }
     </style>
 </head>
-<body>
-    <div class="header">
-        <h1>NEBULA NETWORK ACTIVE</h1>
-        <p>DECENTRALIZED NODE | RAM: 16GB SECURED</p>
+<body onload="checkVault()">
+    <div id="lock-screen">
+        <h1>NEBULA SECURED VAULT</h1>
+        <p>ENTER MASTER KEY TO ACCESS SYSTEM</p>
+        <input type="password" id="passkey" placeholder="••••••••">
+        <button onclick="unlock()" style="background:#00d4ff; border:none; padding:10px; cursor:pointer;">UNLOCK</button>
     </div>
 
-    <div class="mining-status">
-        <h3 style="color: #888;">CURRENT GLOBAL VALUE: $98,432.00 / NBL</h3>
-        <div id="nbl-balance">GENERATING NBL: 0.00000000</div>
-        <p style="font-size: 12px;">ENCRYPTED TRANSACTION TUNNEL ACTIVE...</p>
-        <button style="background: #00d4ff; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer;">WITHDRAW TO COLD WALLET</button>
+    <div id="main-system" style="display:none;">
+        <h1 style="letter-spacing:10px;">NEBULA NETWORK</h1>
+        <div class="vault-box">
+            <p>AUTHORIZED ACCESS: ARCHITECT-X</p>
+            <div id="balance-display">NBL: 0.00000000</div>
+            <p style="color: #444;">DATA SECURED IN LOCAL ENCLAVE</p>
+        </div>
     </div>
-
-    <div class="alias">ID: ARCHITECT-X</div>
 
     <script>
-        let nbl = 0.00000000;
-        // د نیبولا د پیسو تولید (Mining Logic)
-        setInterval(() => {
-            nbl += 0.00000089; // دا د سکو د کموالي او ارزښت لوړولو لپاره ورو دی
-            document.getElementById('nbl-balance').innerText = "GENERATING NBL: " + nbl.toFixed(8);
-        }, 1500);
+        // ستا پټ پاسورډ (دلته یې بدلولی شې)
+        const MASTER_KEY = "786"; 
+        let nbl = parseFloat(localStorage.getItem('savedNBL')) || 0;
+
+        function checkVault() {
+            document.getElementById('main-system').style.display = "none";
+        }
+
+        function unlock() {
+            let input = document.getElementById('passkey').value;
+            if(input === MASTER_KEY) {
+                document.getElementById('lock-screen').style.display = "none";
+                document.getElementById('main-system').style.display = "block";
+                startMining();
+            } else {
+                alert("ACCESS DENIED: INTRUDER DETECTED");
+            }
+        }
+
+        function startMining() {
+            setInterval(() => {
+                nbl += 0.00000095;
+                document.getElementById('balance-display').innerText = "NBL: " + nbl.toFixed(8);
+                // د پیسو ذخیره کول په حافظه کې
+                localStorage.setItem('savedNBL', nbl);
+            }, 2000);
+        }
     </script>
 </body>
 </html>
