@@ -105,11 +105,11 @@
     </script>
 </body>
 </html>
-// د نړیوالو سکو د تولید منطق
+  // GLOBAL ASSET GENERATION LOGIC
 function updateGlobalSupply() {
-    let baseSupply = 124580.4215; // لومړنی مقدار
+    let baseSupply = 124580.4215; //INITIAL_SUPPLY_BASE 
     setInterval(() => {
-        baseSupply += Math.random() * 0.00001; // په اتومات ډول ډېرېږي
+        baseSupply += Math.random() * 0.00001; //AUTO_INCREMENT_PROTOCOL
         document.getElementById('global-supply').innerText = baseSupply.toFixed(4) + " NBL";
     }, 2000);
 }
