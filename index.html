@@ -1,0 +1,22 @@
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <title>RAHMAT SYSTEM</title>
+</head>
+<body style='background-color:black; color:#00FF00; font-family:Courier; text-align:center;'>
+    <h1 style='border-bottom: 2px solid #00FF00; padding:10px;'>RAHMAT DIGITAL BANK</h1>
+    <p>SERVER RAM: 16GB</p>
+    <div style='border:1px solid gold; padding:20px; display:inline-block; margin-top:20px;'>
+        <h3 style='color:gold;'>TRANSFER R-COIN</h3>
+        <input type='text' id='to' placeholder='Receiver ID' style='margin:5px; padding:5px;'><br>
+        <input type='number' id='amt' placeholder='Amount' style='margin:5px; padding:5px;'><br>
+        <button onclick='sendMoney()' style='background:gold; color:black; font-weight:bold; padding:10px; cursor:pointer; margin-top:10px;'>SEND NOW</button>
+    </div>
+    <script>
+        function sendMoney(){ 
+            var name = document.getElementById("to").value; 
+            alert("Transaction Successful to: " + name); 
+        }
+    </script>
+</body>
+</html>
