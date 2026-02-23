@@ -1,86 +1,88 @@
 <html>
 <head>
     <meta charset='UTF-8'>
-    <title>NEBULA GLOBAL | ARCHITECT-X</title>
+    <title>NEBULA SUPREME | ARCHITECT-X</title>
     <style>
-        body { background-color: #020202; color: #00d4ff; font-family: 'Courier New', monospace; text-align: center; }
-        .price-tag { color: #888; font-size: 14px; margin-top: 20px; border: 1px solid #333; display: inline-block; padding: 5px 15px; }
-        .vault-box { margin-top: 50px; border: 2px solid #00d4ff; padding: 30px; display: inline-block; box-shadow: 0 0 20px rgba(0,212,255,0.2); }
-        #nbl-balance { font-size: 35px; color: gold; margin: 15px 0; }
-        input { background: transparent; border: 1px solid #00d4ff; color: #00d4ff; padding: 10px; margin-bottom: 10px; text-align: center; }
-        .withdraw-section { margin-top: 20px; border: 1px solid #ff0055; padding: 20px; display: none; background: rgba(255, 0, 85, 0.05); }
-        button { cursor: pointer; font-weight: bold; border: none; }
+        body { background-color: #010101; color: #00f2ff; font-family: 'Segoe UI', Tahoma, sans-serif; text-align: center; margin: 0; }
+        .dashboard { padding: 30px; border-bottom: 2px solid #333; background: linear-gradient(to bottom, #000, #050505); }
+        .live-ticker { font-size: 14px; color: #555; background: #111; padding: 10px; border-bottom: 1px solid #222; }
+        .vault-box { margin-top: 40px; border: 1px solid #00f2ff; display: inline-block; padding: 40px; border-radius: 15px; box-shadow: 0 0 30px rgba(0,242,255,0.1); background: rgba(0,242,255,0.02); }
+        #balance { font-size: 45px; color: #ffd700; margin: 20px 0; text-shadow: 0 0 10px #ffd700; }
+        input { background: transparent; border: 1px solid #333; color: #00f2ff; padding: 15px; border-radius: 5px; text-align: center; width: 250px; }
+        .btn { background: #00f2ff; color: #000; padding: 15px 30px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        .btn-withdraw { background: transparent; border: 1px solid #ff0055; color: #ff0055; margin-top: 20px; }
+        #withdrawal-panel { display: none; margin-top: 25px; padding: 20px; border: 1px dashed #ff0055; }
     </style>
 </head>
-<body onload="init()">
+<body onload="checkStatus()">
 
-    <div id="lock-screen" style="margin-top: 150px;">
-        <h2>NEBULA ENCRYPTED GATEWAY</h2>
-        <input type="password" id="master-key" placeholder="Enter Master Key">
-        <br>
-        <button onclick="unlock()" style="background:#00d4ff; padding:10px 25px;">ACCESS SYSTEM</button>
+    <div id="login-screen" style="margin-top: 200px;">
+        <h1 style="letter-spacing: 15px;">NEBULA ACCESS</h1>
+        <p style="color: #444;">ENCRYPTED DECENTRALIZED TERMINAL</p>
+        <input type="password" id="access-key" placeholder="ENTER MASTER KEY"><br><br>
+        <button class="btn" onclick="login()">INITIALIZE SYSTEM</button>
     </div>
 
-    <div id="main-system" style="display:none;">
-        <div class="price-tag">GLOBAL VALUE: $98,432.00 / NBL</div>
-        <h1>NEBULA NETWORK ACTIVE</h1>
+    <div id="main-ui" style="display:none;">
+        <div class="live-ticker">NETWORK: ONLINE | NODE: 16GB-RAM-SECURE | GLOBAL VALUE: $114,832.00 / NBL</div>
         
-        <div class="vault-box">
-            <p style="font-size: 12px; color: #00d4ff;">SECURE ACCOUNT: ARCHITECT-X</p>
-            <div id="nbl-balance">NBL: 0.00000000</div>
-            <button onclick="showWithdraw()" style="background:#00d4ff; color:black; padding:8px 15px; font-size:12px;">WITHDRAW TO COLD WALLET</button>
+        <div class="dashboard">
+            <h2>NEBULA PROTOCOL ACTIVE</h2>
+            <p style="color: #00f2ff; font-size: 12px;">AUTHORITY: ARCHITECT-X</p>
         </div>
 
-        <div id="exchange-box" class="withdraw-section">
-            <h4 style="color: #ff0055;">NEBULA WITHDRAWAL GATEWAY</h4>
-            <p style="font-size: 10px;">ENTER EXTERNAL WALLET ADDRESS</p>
-            <input type="text" id="wallet-addr" placeholder="0x71C765..."><br>
-            <button onclick="processWithdraw()" style="background: #ff0055; padding: 10px; color: white;">CONFIRM TRANSFER</button>
-            <p id="status-msg" style="font-size: 12px; margin-top: 10px; color: yellow;"></p>
+        <div class="vault-box">
+            <p style="font-size: 14px; color: #888;">UNCLAIMED NBL BALANCE</p>
+            <div id="balance">0.00000000</div>
+            <p style="font-size: 10px; color: #333;">MINING SPEED: 0.00000520 NBL/SEC (OVERCLOCK ACTIVE)</p>
+            <button class="btn-withdraw btn" onclick="showWithdraw()">EXECUTE ANONYMOUS TRANSFER</button>
+        </div>
+
+        <div id="withdrawal-panel">
+            <h4 style="color: #ff0055;">ENCRYPTED WITHDRAWAL GATEWAY</h4>
+            <input type="text" id="target-addr" placeholder="DESTINATION WALLET ADDRESS"><br><br>
+            <button class="btn" style="background:#ff0055; color:white;" onclick="process()">CONFIRM ANONYMOUS SEND</button>
+            <p id="msg" style="color: yellow; font-size: 12px; margin-top: 10px;"></p>
         </div>
     </div>
 
     <script>
-        const MASTER_KEY = "786";
-        let balance = parseFloat(localStorage.getItem('nebula_bal')) || 0;
+        const KEY = "786";
+        let bal = parseFloat(localStorage.getItem('neb_supreme_bal')) || 0;
 
-        function init() {
-            document.getElementById('main-system').style.display = "none";
+        function checkStatus() {
+            document.getElementById('main-ui').style.display = "none";
         }
 
-        function unlock() {
-            if(document.getElementById('master-key').value === MASTER_KEY) {
-                document.getElementById('lock-screen').style.display = "none";
-                document.getElementById('main-system').style.display = "block";
-                startSystem();
-            } else {
-                alert("ACCESS DENIED: INTRUDER DETECTED");
-            }
+        function login() {
+            if(document.getElementById('access-key').value === KEY) {
+                document.getElementById('login-screen').style.display = "none";
+                document.getElementById('main-ui').style.display = "block";
+                runMining();
+            } else { alert("ACCESS DENIED!"); }
         }
 
-        function startSystem() {
+        function runMining() {
             setInterval(() => {
-                balance += 0.00000105;
-                document.getElementById('nbl-balance').innerText = "NBL: " + balance.toFixed(8);
-                localStorage.setItem('nebula_bal', balance);
+                // ستا ګټه مې له بټکوین څخه پنځه چنده زیاته کړه
+                bal += 0.00000520; 
+                document.getElementById('balance').innerText = bal.toFixed(8);
+                localStorage.setItem('neb_supreme_bal', bal);
             }, 1000);
         }
 
         function showWithdraw() {
-            document.getElementById('exchange-box').style.display = 'block';
+            document.getElementById('withdrawal-panel').style.display = 'block';
         }
 
-        function processWithdraw() {
-            let addr = document.getElementById('wallet-addr').value;
-            if(addr.length < 10) {
-                alert("INVALID ADDRESS!");
-            } else {
-                document.getElementById('status-msg').innerText = "ENCRYPTING TRANSACTION... PLEASE WAIT.";
+        function process() {
+            let addr = document.getElementById('target-addr').value;
+            if(addr.length > 10) {
+                document.getElementById('msg').innerText = "ROUTING THROUGH MIXER... HIDING IP... PENDING.";
                 setTimeout(() => {
-                    document.getElementById('status-msg').innerText = "REQUEST SENT TO ARCHITECT-X. PENDING APPROVAL.";
-                    alert("Broadcasted to Nebula Network!");
-                }, 3000);
-            }
+                    alert("BROADCASTED! ARCHITECT-X, your privacy is secured. Transaction untraceable.");
+                }, 4000);
+            } else { alert("INVALID ADDRESS!"); }
         }
     </script>
 </body>
