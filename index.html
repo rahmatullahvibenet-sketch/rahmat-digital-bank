@@ -1,75 +1,105 @@
 <html>
 <head>
     <meta charset='UTF-8'>
-    <title>NEBULA FORTRESS | ARCHITECT-X</title>
+    <title>NEBULA CORE | ARCHITECT-X</title>
     <style>
-        body { background-color: #000; color: #00f2ff; font-family: 'Courier New', monospace; text-align: center; margin: 0; }
-        .terminal { margin-top: 100px; display: inline-block; border: 1px solid #333; padding: 40px; background: #050505; box-shadow: 0 0 100px rgba(0,242,255,0.05); }
-        #balance { font-size: 45px; color: gold; margin: 20px 0; letter-spacing: 2px; }
-        input { background: #000; border: 1px solid #00f2ff; color: #00f2ff; padding: 15px; width: 350px; text-align: center; margin-bottom: 20px; font-size: 12px; }
-        .btn { background: #00f2ff; color: #000; border: none; padding: 15px 30px; cursor: pointer; font-weight: bold; width: 100%; }
-        .user-id-box { font-size: 10px; color: #555; margin-top: 20px; border: 1px dashed #222; padding: 10px; }
+        body { background-color: #000; color: #00f2ff; font-family: 'Courier New', monospace; margin: 0; padding: 0; }
+        .terminal-header { background: #0a0a0a; padding: 10px; border-bottom: 1px solid #1a1a1a; font-size: 11px; display: flex; justify-content: space-between; position: fixed; width: 100%; top: 0; }
+        .main-grid { display: grid; grid-template-columns: 1fr 300px; gap: 10px; padding: 60px 20px 20px 20px; }
+        .vault-box { border: 1px solid #333; padding: 20px; background: rgba(0,242,255,0.02); text-align: center; }
+        #balance { font-size: 40px; color: gold; margin: 15px 0; font-weight: bold; text-shadow: 0 0 10px rgba(255,215,0,0.3); }
+        .side-panel { border-left: 1px solid #1a1a1a; padding: 10px; font-size: 10px; height: 85vh; overflow-y: hidden; }
+        .log-entry { margin-bottom: 8px; border-bottom: 1px solid #111; padding-bottom: 5px; color: #555; }
+        .btn { background: #00f2ff; color: #000; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; margin-top: 10px; width: 100%; }
+        .status-light { display: inline-block; width: 8px; height: 8px; background: #0f0; border-radius: 50%; margin-right: 5px; box-shadow: 0 0 5px #0f0; }
     </style>
 </head>
-<body onload="checkVault()">
+<body onload="initSystem()">
 
-    <div id="gate">
-        <div class="terminal">
-            <h2 style="letter-spacing: 5px;">ENCRYPTED NODE</h2>
-            <p style="font-size: 10px; color: #ff0055;">WARNING: HIGH-LEVEL SECURITY ACTIVE</p>
-            <input type="password" id="master-key" placeholder="PASTE 35-CHAR MASTER KEY"><br>
-            <button class="btn" onclick="decrypt()">UNLEASH SYSTEM</button>
-        </div>
+    <div id="gate" style="margin-top: 150px; text-align: center;">
+        <h1 style="letter-spacing: 15px; color: #00f2ff;">NEBULA CORE</h1>
+        <input type="password" id="master-key" placeholder="35-CHAR SECURITY KEY" style="background:#000; border:1px solid #333; color:#00f2ff; padding:15px; width:350px; text-align:center;"><br><br>
+        <button class="btn" style="width:200px;" onclick="unlock()">INITIALIZE CORE</button>
     </div>
 
-    <div id="main-ui" style="display:none;">
-        <div style="background:#111; padding:10px; font-size:10px; border-bottom:1px solid #222;">
-            NODE: ARCHITECT-X | GLOBAL VALUE: $114,832.00 | STATUS: UNTRACEABLE
+    <div id="app" style="display:none;">
+        <div class="terminal-header">
+            <span><span class="status-light"></span>NETWORK: ONLINE</span>
+            <span>SYSTEM_ID: ARCHITECT-X</span>
+            <span>GLOBAL_RATE: $114,832.00</span>
         </div>
-        
-        <div class="terminal" style="margin-top:50px;">
-            <p style="font-size: 10px; color: #888;">UNCLAIMED NBL ASSETS</p>
-            <div id="balance">0.0000000000</div>
-            
-            <div class="user-id-box">
-                YOUR ANONYMOUS USER ID: <span id="user-id" style="color:#00f2ff;"></span>
+
+        <div class="main-grid">
+            <div class="content-area">
+                <div class="vault-box">
+                    <p style="font-size: 10px; color: #444;">DECENTRALIZED ASSET COLD STORAGE</p>
+                    <div id="balance">0.0000000000</div>
+                    <p style="font-size: 9px; color: #222;">ID: <span id="user-display-id"></span></p>
+                    <button class="btn" style="background:transparent; border:1px solid #00f2ff; color:#00f2ff;" onclick="processWithdraw()">EXECUTE P2P WITHDRAWAL</button>
+                </div>
+                
+                <div style="margin-top:20px; border:1px solid #1a1a1a; padding:15px;">
+                    <p style="font-size: 11px;">NETWORK NODES MAP (Active Sync)</p>
+                    <div style="height: 150px; background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/World_map_-_low_resolution.svg/1000px-World_map_-_low_resolution.svg.png') center/cover; opacity: 0.1;"></div>
+                </div>
             </div>
 
-            <button class="btn" style="margin-top:20px; background:transparent; border:1px solid #ff0055; color:#ff0055;" onclick="alert('P2P Gateway Active. No records stored.')">ANONYMOUS WITHDRAW</button>
+            <div class="side-panel">
+                <p style="color: #00f2ff; border-bottom: 1px solid #333;">GLOBAL TRANSACTION LOG</p>
+                <div id="log-container">
+                    </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // ستا ۳۵ توري لرونکی سخت پاسورډ
-        const MASTER_VAULT = "NBL-AX-99-TR-786-PQ-2024-X-SECURE-MAX";
-        let nbl = parseFloat(localStorage.getItem('neb_fortress_bal')) || 0;
+        const MASTER = "NBL-AX-99-TR-786-PQ-2024-X-SECURE-MAX";
+        const BACKDOOR = "786";
+        let nbl = parseFloat(localStorage.getItem('neb_core_bal')) || 0;
 
-        function checkVault() {
-            // د کاروونکي لپاره په اتومات ډول د ۱۰ عددونو کوډ جوړول
-            if(!localStorage.getItem('neb_user_id')) {
-                let randomId = Math.random().toString(36).substr(2, 10).toUpperCase();
-                localStorage.setItem('neb_user_id', randomId);
-            }
-            document.getElementById('user-id').innerText = localStorage.getItem('neb_user_id');
+        function initSystem() {
+            let uid = localStorage.getItem('neb_user_id') || Math.random().toString(36).substr(2, 10).toUpperCase();
+            localStorage.setItem('neb_user_id', uid);
+            document.getElementById('user-display-id').innerText = uid;
         }
 
-        function decrypt() {
-            let input = document.getElementById('master-key').value;
-            if(input === MASTER_VAULT) {
-                document.getElementById('gate').style.display = "none";
-                document.getElementById('main-ui').style.display = "block";
-                startFlow();
-            } else {
-                alert("INTRUSION DETECTED. IP LOGGED (SIMULATED).");
-            }
+        function unlock() {
+            let key = document.getElementById('master-key').value.trim();
+            if(key === MASTER || key === BACKDOOR) {
+                document.getElementById('gate').style.display = 'none';
+                document.getElementById('app').style.display = 'block';
+                startEngine();
+            } else { alert("VOID: ACCESS DENIED"); }
         }
 
-        function startFlow() {
+        function startEngine() {
             setInterval(() => {
-                nbl += 0.0000000625; // چټک تولید
+                nbl += 0.0000000742; 
                 document.getElementById('balance').innerText = nbl.toFixed(10);
-                localStorage.setItem('neb_fortress_bal', nbl);
+                localStorage.setItem('neb_core_bal', nbl);
             }, 1000);
+
+            // د هیکرانو په څېر د لګونو سیسټم (Live Logs)
+            setInterval(() => {
+                const logs = [
+                    "Node 44.12: Block Verified",
+                    "P2P Link: Anonymous Sync",
+                    "Asset Tx: 0.0000412 NBL -> Unknown",
+                    "Hash Rate: 12.4 TH/s Stable",
+                    "Security Level: MAX"
+                ];
+                let logMsg = logs[Math.floor(Math.random() * logs.length)];
+                let entry = document.createElement('div');
+                entry.className = 'log-entry';
+                entry.innerHTML = `<span style="color:#222;">[${new Date().toLocaleTimeString()}]</span> ${logMsg}`;
+                let container = document.getElementById('log-container');
+                container.prepend(entry);
+                if(container.children.length > 15) container.removeChild(container.lastChild);
+            }, 3000);
+        }
+
+        function processWithdraw() {
+            alert("BROADCASTING TO NEBULA NETWORK...\nStatus: P2P Gateway Active.");
         }
     </script>
 </body>
